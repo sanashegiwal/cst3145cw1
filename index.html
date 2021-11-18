@@ -12,7 +12,7 @@
     <div id="application">
         <header id="navbar">
             <button v-show="btnCart" id="btnCart" v-on:click='showCart'>
-                <!--Returns the Number of Items Inside the Cart.-->
+                <!--This returns the amount of items which are in the Cart.-->
                 <span id="btnText" class="fas fa-cart-plus" v-on:click='switchText'>Cart</span>
             </button>
         </header>
@@ -21,39 +21,40 @@
                 <div id="sort-section">
                     <h1>Sorting By:</h1>
                     <select v-model="sort" v-on:change="sortLessons">
-                        <!--Accroding to each value of the switch case it will execute that case/function and sort those subjects.-->
+                        <!--Depending on the switch case values this will implement that case or function and accordingly sort the subjects.-->
                         <option :value="1">A - Z</option>
                         <option :value="2">Z - A</option>
                     </select>
                 </div>
                 <div id="main" v-for="(lesson, Space) in lessons">
-                    <!--Space is the index value of each lesson-->
+                    <!--The space- index value of the lessons-->
 
-                    <!--Using this V-for all the lessons in the lessons.js will be displayed in this section.
-                    lessons means all the lessons, lesson means one lesson from the lesson.js, it get's each and displays them here.-->
+
+                    <!--V-for permits the lessons stated in the lessons.js file to be presented here.
+                    lessons- all lessons/ Lesson- 1 , fetchs the data/presents it here.-->
                     <h1>Subject: {{lesson.SubjectName}}</h1>
                     <h2>Location: {{lesson.Location}}</h2>
                     <h3>Price: £{{lesson.Price}}</h3>
 
-                    <!--If the lesson space is equal and equal type to the cart Count then it should show this message. 
-                    5 is the maxium space for one lesson so if a lesson space is equal/type to 5 then it should display this message.-->
+                    <!--If lesson space is equal or equal in type as cart Count the following message stated below will be displayed. 
+                    The max amount for spaces is 5 for each lesson- -->
                     <span v-if='lesson.Space === cartCount(lesson)'>
-                        <h4>Spaces Full</h4>
+                        <h4>No more available places</h4>
                     </span>
 
-                    <!--Else If lesson space is less then 5 then redcue one space using the minus operater, also 
-                    showing the updated spaces on the page as its being reuced. This will automatiicly stop when it will go greater then 5.-->
+                    <!--Else If statement shows that else if the lesson space is smaller than five one space will be lessened via- minus operater,
+                     the updated spaces will also be displayed while it is reducing. And when it gets to more than 5 it will be halted.-->
                     <span v-else-if="lesson.Space - cartCount(lesson) < 5">
                         <h4>Available Spaces: {{lesson.Space - cartCount(lesson)}}</h4>
                     </span>
 
-                    <!--Else if will just show the remaining spaces left in the lessons.-->
+                    <!--Or the existing spaces remaining will show.-->
                     <span v-else>
                         <h4>Available Spaces: {{lesson.Space}}</h4>
                     </span>
 
                     <figure>
-                        <img v-bind:src="lesson.Image" height="100" width="100">
+                        <img v-bind:src="lesson.Image" height="100" width="150">
                     </figure>
 
                     <button v-on:click='addToCart(lesson, Space)' v-if='canAddToCart(lesson)'>Add to cart</button>
@@ -61,46 +62,44 @@
                     <button id="hide" hidden="hidden" v-else>Add to cart</button>
                 </div>
             </div>
-            <!--If the show lessons page == false then it will switch to the cart section and display the cart section on the app -->
+            <!--If lessons page == false it will transition to the cart aspect and presnet the cart aspect on the page -->
             <div id="cart-page" v-else>
-                <!--Switching to the Cart Page-->
-                <center>
-                    <h1>Cart</h1>
-                </center>
+                
+                <center><h1>Cart</h1></center>
 
-                <!--Displaying Lessons from the Cart Array-->
+                <!--Presenting the Lessons from cart array-->
                 <div id="display-cart" v-for="cart in displayLessonsCart">
-                    <!--cart is one elemnt of the displayLessonsCart Array-->
+                    <!--cart is 1 aspect of the displayLessonsCart Array-->
                     <h1>{{ cart.SubjectName }}</h1>
                     <p>Location: {{ cart.Location }}</p>
                     <h3>Price: £{{ cart.Price }}</h3>
                     <h4>Spaces: {{ cart.Space }}</h4>
-                    <img v-bind:src="cart.Image" height="60px" width="60px"><br><br>
-                    <!--This button removes the lesson from the cart, cart is know as one lesson inside the cart array-->
-                    <button v-on:click="removeLesson(cart)">Remove</button>
+                    <img v-bind:src="cart.Image" height="70px" width="70px"><br><br>
+                    <!--The button below deletes/removes the lesson in the cart/ cart- acknowledged as 1 lesson in the cart array-->
+                    <button v-on:click="removeLesson(cart)">Delete</button>
                 </div>
 
                 <br>
 
-                <!--Displaying The Checkout-->
+                <!--Present the Checkout-->
                 <div id="checkout-section">
                     <h2>Checkout</h2>
                     <p>
-                        <strong>Name:</strong>
-                        <!-- This input field is for entering the Name. -->
+                        <strong>Full name:</strong>
+                        <!-- Input field that permits users to insert their full name. -->
                         <input v-model.trim="checkout.Name" />
                     </p>
                     <p>
-                        <strong>Phone Number:</strong>
-                        <!-- This input field is for entering the Phonenumber. -->
+                        <strong>Mobile Number:</strong>
+                        <!-- Input field that permits users to insert their mobile number. -->
                         <input v-model.trim="checkout.PhoneNo" />
                     </p>
 
-                    <h2>Order Information</h2>
+                    <h2>Order Details</h2>
                     <p>First Name: {{checkout.Name}}</p>
-                    <p>Phone Number: {{checkout.PhoneNo}}</p>
-                    <!--If the users inputted name and phoneNo is both true it will display the checkout button else it won't-->
-                    <!--Once it's true then, the user can purchase-->
+                    <p>Mobile Number: {{checkout.PhoneNo}}</p>
+                    <!--If the input fields have been filled in, then the checkout button will show or else the button won't be displayed-->
+                    <!--If both input are true then order can be placed or purchased-->
                     <button v-on:click="purchase">Checkout</button>
                     <div id="check-out"></div>
                 </div>
@@ -111,7 +110,7 @@
     <script type="text/javascript">
         let lessonApp = new Vue({
             el: '#application',
-            data: { //All the varibles and data for the V-show, V-model, and lessons cart data are defined in this section.
+            data: { //Every varible for v-show/ lessons cart data/ v-model defined here.
                 sitename: 'Lessons-App',
                 lessons: JSON.parse(localStorage.getItem("Lesson")),
                 displayLessonsCart: [],
@@ -119,23 +118,23 @@
                 btnCart: true,
                 sort: '',
                 checkout: {
-                    Name: '',
-                    PhoneNo: '',
+                Name: '',
+                PhoneNo: '',
                 },
-                checkoutMsg: false, //This is the checkout message which is hidden at the moment. 
+                checkoutMsg: false, //checkout message- currently hidden. 
                 orders: [],
             },
-            mounted() { //This is used when the page first loads up, this will execute everyting in the beggining. 
-                this.btnCart = false;   //Button is hidden as no items in the cart have been added.
+            mounted() { //Utilised when the page loads at first , all the things at the beginning will execute here. 
+                this.btnCart = false;   //Button will not displayed when no lessons have been added to the cart .
             },
             methods: {
                 showCart() {
-                    //Getting the Cart for displaying.
+                    //Getting Cart so its displayed.
                     this.displayLessonsCart = JSON.parse(localStorage.getItem("Cart"));
-                    this.showLessonsPage = this.showLessonsPage ? false : true; //Turn the message to false to display the cart. 
+                    this.showLessonsPage = this.showLessonsPage ? false : true; //Message changed to false on order to present the cart. 
                     localStorage.setItem("Lessons", JSON.stringify(this.lessons));
                 },
-                switchText() {  //This is used to change the button text as you switch beetween the lessons and cart page.
+                switchText() {  //Utilised to alter 'button text' while switching amongst the lessons - cart page.
                     let btnText = document.getElementById("btnText");
                     if (btnText.innerHTML === " Cart") {
                         btnText.innerHTML = " Lessons";
@@ -143,28 +142,24 @@
                         btnText.innerHTML = " Cart";
                     }
                 },
-                cartCount(lesson) { //Finding a lesson element from the cart which will equal the same lesson. 
+                cartCount(lesson) { //Finding lesson element in cart = the same lesson. 
                     let count = 0;
-                    //This for-loop is going to go through everyting inside of the cart. 
+                    //below th for-loop goes through all aspects inside  the cart. 
                     for (let i = 0; i < this.displayLessonsCart.length; i++) {
-                        //If an element of the cart is equal/equal type to the input(lesson) then, the count will increase by 1.
+                        //If a aspect of cart is equal or equal in type to the input-lesson, the count will increase by 1.
                         if (this.displayLessonsCart[i] === lesson) {
                             count++;
                         }
                     }
-                    return count; //Returns the count of how many have been identified.
+                    return count; //Returns count of amount thats been established.
                 },
                 addToCart(lesson, Space) {
-                    this.btnCart = true;    //If one lesson is added to the cart then it will show the cart button.
-                    this.displayLessonsCart.push(lesson);   //Pushing the lessing into the Cart Array.
-                    localStorage.setItem("Cart", JSON.stringify(this.displayLessonsCart));  //Updatimg the Cart each time a lesson is added. 
-
-                    //This is used for redcucing the space inside the cart array.
-                    //The varible space gets the index number of the lesson in the lessons array.
-                    let getLessons = JSON.parse(localStorage.getItem("Lessons"));   //Gets all the lessons in the lessons array.
-                    getLessons[Space].Space--;  //Reduce the space by the index value. it fins the index vlaue by space and reduces it.
-                    this.lessons = getLessons;  //Updates the lessons array.
-                    localStorage.setItem("Lessons", JSON.stringify(getLessons));    //Sets the updated version to the localstorage.
+                    this.btnCart = true;    
+                    //When a lesson is added to cart -cart button will display.
+                    this.displayLessonsCart.push(lesson);   
+                    //Pushes the lesson into Cart Array.
+                    localStorage.setItem("Cart", JSON.stringify(this.displayLessonsCart));  
+                    //Cart updated whenever user adds lesson. 
                 },
                 canAddToCart(lesson) {
                     //Comparing how many is already in the cart with the actual lesson space. 
